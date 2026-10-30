@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#101b36">
+<title>Pokémon Court · 정의의 저울</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <a class="brand" href="#" id="homeBtn"><span class="brand-seal">⚖</span><span><b>POKÉMON</b><small>COURT ACADEMY</small></span></a>
+    <div class="top-center"><span class="status-dot"></span> 왕립 포켓몬 재판소 <i></i> <span id="topRank">판사 임명 대기</span></div>
+    <div class="top-right"><span class="gold-chip">✦ <b id="topXp">0</b> JP</span><button class="top-btn" id="saveStatus" title="저장 상태">저장됨 ✓</button></div>
+  </header>
+  <div class="layout">
+    <aside class="sidebar">
+      <section class="judge-card">
+        <div class="side-kicker">CURRENT JUDGE · 판사</div>
+        <div class="judge-portrait" id="sideAvatar">⚖️</div>
+        <h2 id="sideName">미임명</h2><div class="judge-rank" id="sideRank">판사를 선택해 주세요</div>
+        <div class="level-row"><b id="sideLevel">Lv. 0</b><span id="sideXpText">0 / 100 XP</span></div>
+        <div class="xp-track"><span id="sideXpBar"></span></div>
+        <div class="side-stats"><div><b id="sideWins">0</b><small>승소 재판</small></div><div><b id="sideFriends">0</b><small>교화 동료</small></div></div>
+      </section>
+      <section class="roster-card"><div class="side-section-title"><b>교화 포켓몬</b><span id="rosterCount">0 / 6</span></div><p class="side-caption">재판을 통해 마음을 바꾼 동료들</p><div id="rosterList" class="roster-list"><div class="empty-roster">아직 합류한 동료가 없어.</div></div></section>
+      <div class="sidebar-bottom"><span>JUSTICE · TRUTH · TRUST</span><small>진실을 밝히고, 다시 시작할 기회를 주다.</small></div>
+    </aside>
+    <main class="main">
+      <section id="homeScreen" class="screen active">
+        <div class="welcome-banner"><div class="banner-copy"><div class="eyebrow">THE ROYAL POKÉMON COURT</div><h1>진실을 밝히는 자,<br><em>정의를 세우다.</em></h1><p>너만의 판사 포켓몬을 임명하고 30개의 법정 구역을 돌파해.<br>올바른 판결은 성장으로, 교화된 피고는 든든한 동료가 된다.</p><div class="banner-actions"><button class="primary-btn" id="startBtn">⚖ 판사 임명하기</button><button class="secondary-btn" id="continueBtn">이어하기</button></div></div><div class="banner-art"><div class="sun-disc"></div><div class="court-building"><div class="roof">⚖</div><div class="columns"><i></i><i></i><i></i><i></i></div><div class="steps"></div></div><div class="floating-seal seal-one">CASE FILE <b>NO. 001</b></div><div class="floating-seal seal-two">VERDICT <b>JUSTICE</b></div></div></div>
+        <div class="feature-strip"><article><span>01</span><div><b>판사 임명과 성장</b><small>파트너 포켓몬을 선택해 베테랑 판사까지 성장</small></div></article><article><span>02</span><div><b>증언과 증거 심리</b><small>모순되는 진술을 찾아 결정적 증거를 제시</small></div></article><article><span>03</span><div><b>교화와 동료 육성</b><small>재판을 마친 포켓몬을 동료로 영입</small></div></article></div>
+        <div class="home-bottom"><div><b>30개 법정 구역</b><small>총 225건의 사건 · 점진적으로 높아지는 난이도</small></div><div><b>6단계 판사 등급</b><small>견습 → 초급 → 중급 → 상급 → 전문 → 베테랑</small></div><div><b>브라우저 자동 저장</b><small>같은 브라우저에서 이어서 플레이</small></div></div>
+      </section>
+      <section id="judgeScreen" class="screen">
+        <div class="page-heading"><div class="eyebrow">APPOINTMENT HALL · 판사 임명실</div><h1>함께 정의를 세울 판사를 선택해.</h1><p>선택한 포켓몬은 플레이어의 대표 판사가 돼. 최초 선택 후에도 새 게임으로 다시 시작할 수 있어.</p></div>
+        <div id="judgeGrid" class="judge-grid"></div><div class="selection-bar"><div id="judgeChoice">판사 후보를 선택해 주세요.</div><button class="primary-btn" id="appointBtn" disabled>판사 임명 및 입장 →</button></div>
+      </section>
+      <section id="hubScreen" class="screen">
+        <div class="page-heading page-heading-row"><div><div class="eyebrow">JUDICIAL DISTRICT · 법정 관할 구역</div><h1>재판소 관할 지도</h1><p>열린 구역을 선택해 사건을 해결해. 한 구역의 모든 재판을 마쳐야 다음 구역이 열린다.</p></div><button class="secondary-btn" id="newJudgeBtn">판사 다시 선택</button></div>
+        <div class="summary-bar"><div class="summary-emblem">⚖</div><div class="summary-copy"><b id="hubJudgeName">판사</b><span id="hubJudgeRank">견습 판사</span></div><div class="summary-metric"><b id="hubCaseCount">0</b><small>완료한 재판</small></div><div class="summary-metric"><b id="hubStageCount">0 / 30</b><small>완료 구역</small></div><div class="summary-metric"><b id="hubRecruitCount">0</b><small>교화 동료</small></div></div>
+        <div class="section-title"><div><div class="eyebrow">THE COURT DISTRICTS</div><h2>법정 스테이지</h2></div><span id="districtProgress">0 / 30 구역 완료</span></div>
+        <div id="stageGrid" class="stage-grid"></div>
+      </section>
+      <section id="stageScreen" class="screen">
+        <div class="breadcrumb"><button id="backHub">← 관할 지도</button><span>/</span><span id="stageBreadcrumb">제1구역</span></div>
+        <div class="page-heading"><div class="eyebrow" id="stageEyebrow">DISTRICT 01</div><h1 id="stageTitle">초심자의 법정</h1><p id="stageDesc"></p></div>
+        <div class="stage-progress-panel"><div><b id="stageCasesTitle">사건 목록</b><small id="stageCasesSub">모든 사건을 해결하면 다음 구역이 개방된다.</small></div><div class="progress-wrap"><div class="progress-line"><span id="stageBar"></span></div><b id="stageProgressText">0 / 5</b></div></div>
+        <div id="caseGrid" class="case-grid"></div>
+      </section>
+      <section id="trialScreen" class="screen">
+        <div class="breadcrumb"><button id="quitTrial">← 사건 목록</button><span>/</span><span id="trialBreadcrumb">제1구역 · 제1사건</span></div>
+        <div class="trial-heading"><div><div class="eyebrow" id="trialLabel">COURT IN SESSION</div><h1 id="trialTitle">사건명</h1><p id="trialSub">증언을 검토하고 진실을 밝혀라.</p></div><div class="hearing-pill" id="hearingPill">심리 1 / 2</div></div>
+        <div class="trial-progress"><span id="trialBar"></span></div>
+        <div class="trial-layout"><div class="trial-main">
+          <section class="court-panel testimony-panel"><div class="panel-heading"><span>Ⅰ · 증인 신문</span><small id="witnessRole">증인 진술</small></div><div class="witness-content"><div class="witness-avatar" id="witnessAvatar">⚡</div><div class="witness-words"><b id="witnessName">증인 피카츄</b><p id="witnessText"></p></div></div><div class="choice-caption">모순이 의심되는 진술을 선택해.</div><div id="statementChoices" class="statement-choices"></div></section>
+          <section class="court-panel evidence-panel"><div class="panel-heading"><span>Ⅱ · 증거 조사</span><small>진술을 반박할 증거를 선택</small></div><div id="evidenceChoices" class="evidence-choices"></div></section>
+          <div class="trial-actions"><div id="trialFeedback" class="trial-feedback">진술 하나와 증거 하나를 선택해 제출해.</div><button class="primary-btn" id="submitBtn" disabled>증거 제출하기 →</button></div>
+        </div><aside class="trial-aside"><section class="docket-card"><div class="eyebrow">OFFICIAL DOCKET</div><h3>사건 기록</h3><div class="docket-row"><span>피고 포켓몬</span><b id="docketDefendant">—</b></div><div class="docket-row"><span>사건 유형</span><b id="docketType">—</b></div><div class="docket-row"><span>현재 심리</span><b id="docketRound">1 / 2</b></div><div class="docket-row"><span>오답 횟수</span><b id="docketMistakes">0</b></div></section><section class="docket-card rules-card"><div class="eyebrow">COURT PROCEDURE</div><h3>재판 절차</h3><ol><li>증언을 읽고 모순을 찾는다.</li><li>의심되는 진술을 선택한다.</li><li>이를 입증할 증거를 선택한다.</li><li>정확한 조합이면 다음 심리로 넘어간다.</li></ol></section></aside></div>
+      </section>
+      <section id="resultScreen" class="screen"><div class="verdict-card"><div class="verdict-stamp" id="verdictStamp">JUSTICE</div><div class="eyebrow">FINAL VERDICT · 최종 판결</div><h1 id="verdictTitle">판결이 내려졌다</h1><p id="verdictDesc"></p><div id="rewardList" class="reward-list"></div><div id="verdictDetail" class="verdict-detail"></div><div class="verdict-actions"><button class="primary-btn" id="resultPrimary">다음 사건</button><button class="secondary-btn" id="resultSecondary">사건 목록으로</button></div></div></section>
+      </main>
+  </div>
+  <footer><span>POKÉMON COURT ACADEMY · THE JUDGE'S PATH</span><span>팬메이드 비공식 프로젝트 · 진행도는 이 브라우저에 저장됩니다.</span></footer>
+</div>
+<script src="game.js"></script>
+</body></html>
