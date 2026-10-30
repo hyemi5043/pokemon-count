@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>Pokémon Court | 판사의 길</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" id="homeLink"><span class="brand-mark">⚖</span><span>POKÉMON <b>COURT</b></span></a>
+      <div class="top-meta"><span class="live-dot"></span> JUDICIAL ACADEMY <span class="top-divider">|</span> 판사 육성 기록</div>
+    </header>
+    <main>
+      <section id="homeScreen" class="screen active">
+        <div class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">THE POKÉMON COURTROOM</p>
+            <h1>진실을 판결하고<br><em>정의</em>를 성장시켜라.</h1>
+            <p class="hero-desc">너만의 판사 포켓몬을 선택하고 30개의 법정 스테이지에 도전하라.<br>올바른 판결은 경험치가 되고, 교화된 포켓몬은 새로운 동료가 된다.</p>
+            <div class="hero-actions"><button class="btn btn-primary" id="beginJourney">판사 임명하기 <span>→</span></button><button class="btn btn-secondary" id="continueJourney">이어하기</button></div>
+            <p class="tiny-note">30 스테이지 · 225개 재판 · 포켓몬 영입 및 육성</p>
+          </div>
+          <div class="hero-art"><div class="sun-glow"></div><div class="court-columns"><i></i><i></i><i></i></div><div class="court-emblem">⚖</div><div class="court-steps"></div><div class="floating-card card-a">VERDICT <b>JUSTICE</b></div><div class="floating-card card-b">LEVEL <b>UP</b></div></div>
+        </div>
+        <div class="feature-row"><article class="feature"><span>01</span><div><b>판사 선택과 성장</b><small>함께할 포켓몬을 선택하고 베테랑 판사로 키워라.</small></div></article><article class="feature"><span>02</span><div><b>증거와 심문</b><small>증언의 모순을 찾아 정확한 증거를 제출하라.</small></div></article><article class="feature"><span>03</span><div><b>교화와 영입</b><small>재판을 마친 포켓몬을 동료 엔트리에 추가하라.</small></div></article></div>
+      </section>
+
+      <section id="judgeScreen" class="screen">
+        <div class="section-heading"><p class="eyebrow">APPOINT YOUR JUDGE</p><h2>판사 포켓몬을 선택하라</h2><p>선택한 포켓몬은 너와 함께 성장하는 주인공이 된다.</p></div>
+        <div id="judgeGrid" class="pokemon-grid"></div>
+        <div class="selection-footer"><div id="judgeSelectionText">판사로 임명할 포켓몬을 선택해 주세요.</div><button class="btn btn-primary" id="confirmJudge" disabled>판사 임명 및 시작 →</button></div>
+      </section>
+
+      <section id="hubScreen" class="screen">
+        <div class="hub-header"><div><p class="eyebrow">JUDICIAL ACADEMY</p><h2>판사 아카데미</h2><p>재판을 해결하고 판사 등급을 높여 다음 법정으로 진출하라.</p></div><button class="btn btn-secondary" id="changeJudge">판사 변경</button></div>
+        <div class="profile-panel card-panel">
+          <div class="profile-mon" id="profileAvatar">⚡</div><div class="profile-info"><div class="profile-kicker">CURRENT JUDGE</div><h3 id="profileName">피카츄</h3><div class="rank-line"><span id="rankName">견습 판사</span><span id="levelText">Lv. 1</span></div><div class="xp-track"><div id="xpBar"></div></div><small id="xpText">0 / 100 XP</small></div>
+          <div class="profile-stats"><div><b id="completedCount">0</b><small>완료한 재판</small></div><div><b id="recruitedCount">0</b><small>영입한 동료</small></div><div><b>30</b><small>전체 스테이지</small></div></div>
+        </div>
+        <div class="hub-columns"><div class="stage-area"><div class="subheading"><div><p class="eyebrow">30 CHAPTERS</p><h3>법정 스테이지</h3></div><span id="stageProgress">0 / 30 완료</span></div><div id="stageGrid" class="stage-grid"></div></div>
+          <aside class="roster-area"><div class="subheading"><div><p class="eyebrow">YOUR TEAM</p><h3>교화 포켓몬 엔트리</h3></div><span id="rosterCount">1마리</span></div><div id="rosterList" class="roster-list"></div><p class="roster-tip">재판을 성공적으로 마치면 피고 포켓몬이 교화되어 동료로 합류한다.</p></aside></div>
+      </section>
+
+      <section id="stageScreen" class="screen">
+        <div class="section-heading"><p class="eyebrow" id="stageEyebrow">STAGE 01</p><h2 id="stageTitle">첫 번째 법정</h2><p id="stageDescription">법정의 기본 절차를 익혀라.</p></div>
+        <div class="stage-summary card-panel"><div><b id="stageCaseCount">재판 5건</b><small>이 스테이지의 모든 사건을 해결하면 다음 스테이지가 열린다.</small></div><div class="stage-progress-track"><div id="stageProgressBar"></div></div><span id="stageCaseProgress">0 / 5</span></div>
+        <div id="caseGrid" class="case-grid"></div><div class="back-row"><button class="btn btn-secondary" id="backToHub">← 아카데미로</button></div>
+      </section>
+
+      <section id="trialScreen" class="screen">
+        <div class="trial-top"><div><p class="eyebrow" id="trialStageLabel">STAGE 01 · CASE 01</p><h2 id="trialTitle">사라진 배지 사건</h2></div><div class="round-chip" id="roundLabel">심리 1 / 3</div></div>
+        <div class="trial-progress"><div id="trialProgressBar"></div></div>
+        <div class="court-layout"><div class="main-column">
+          <div class="witness-panel card-panel"><div class="panel-label">WITNESS TESTIMONY <span id="witnessName">증인 · 피카츄</span></div><div class="witness-body"><div class="witness-avatar" id="witnessAvatar">⚡</div><div class="speech"><div class="speech-name" id="speechName">증언</div><p id="statementText"></p></div></div><div class="statement-list" id="statementList"></div><div class="witness-hint" id="witnessHint">진술을 읽고 모순을 찾아보세요.</div></div>
+          <div class="evidence-panel card-panel"><div class="panel-label">COURT EVIDENCE <span>진술과 모순되는 증거를 선택하세요</span></div><div class="evidence-grid" id="evidenceGrid"></div></div>
+          <div class="action-row"><button class="btn btn-secondary" id="previousRound">← 이전 심리</button><button class="btn btn-primary" id="submitEvidence" disabled>증거 제출</button><button class="btn btn-secondary" id="nextRound">다음 심리 →</button></div><div id="feedback" class="feedback" aria-live="polite"></div>
+        </div><aside class="side-column"><div class="side-card"><p class="eyebrow">CASE FILE</p><h3>사건 기록</h3><div class="note-row"><span>피고</span><b id="defendantName">파이리</b></div><div class="note-row"><span>사건 유형</span><b id="caseType">분실 사건</b></div><div class="note-row"><span>현재 심리</span><b id="sideRound">1 / 3</b></div><div class="note-row"><span>오답 횟수</span><b id="mistakeCount">0</b></div></div><div class="side-card rules-card"><p class="eyebrow">HOW TO PLAY</p><h3>재판 절차</h3><ol><li>증언을 하나 선택한다.</li><li>관련된 증거 카드를 선택한다.</li><li>증거 제출을 눌러 모순을 입증한다.</li></ol><p class="rules-tip">후반 스테이지일수록 증거가 많아지고 진술이 복잡해진다.</p></div><button class="btn btn-ghost" id="leaveTrial">재판 포기하기</button></aside></div>
+      </section>
+
+      <section id="resultScreen" class="screen"><div class="result-card card-panel"><div class="result-icon" id="resultIcon">⚖</div><p class="eyebrow">VERDICT DELIVERED</p><h2 id="resultTitle">판결이 내려졌다</h2><p id="resultText"></p><div id="rewardPanel" class="reward-panel"></div><div class="verdict-box" id="verdictBox"></div><div class="hero-actions centered"><button class="btn btn-primary" id="resultNext">다음 재판</button><button class="btn btn-secondary" id="resultStage">스테이지로</button></div></div></section>
+    </main>
+    <footer><span>POKÉMON COURT · THE JUDGE'S PATH</span><span>비공식 팬메이드 프로젝트 · 개인 진행도는 이 브라우저에 저장됩니다.</span></footer>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>
