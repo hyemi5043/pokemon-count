@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#101a32">
+<title>Pokémon Court: 정의의 여정</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app" class="app-shell">
+  <header class="topbar">
+    <button class="brand" id="brandHome"><span class="brand-mark">⚖</span><span><b>POKÉMON COURT</b><small>정의의 여정</small></span></button>
+    <div class="top-meta"><span class="live-dot"></span><span id="topLocation">왕립 재판소</span><span class="meta-divider"></span><span id="topRank">판사 임명 대기</span></div>
+    <div class="top-actions"><span class="currency">✦ <b id="topJP">0</b> JP</span><button class="icon-btn" id="saveBtn" title="저장">저장 ✓</button></div>
+  </header>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <section class="judge-card">
+        <div class="section-kicker">YOUR JUDGE</div><div class="judge-avatar" id="sideAvatar">⚖️</div>
+        <h2 id="sideName">판사 미임명</h2><div class="rank-label" id="sideRank">파트너를 선택하세요</div>
+        <div class="level-line"><b id="sideLevel">Lv. 1</b><span id="sideExp">0 / 100 EXP</span></div><div class="exp-track"><i id="sideExpBar"></i></div>
+        <div class="judge-stats"><div><b id="sideWins">0</b><small>해결 사건</small></div><div><b id="sideFriends">0</b><small>동료</small></div></div>
+      </section>
+      <section class="party-card"><div class="side-heading"><b>조사 파티</b><span id="partyCount">1 / 4</span><span id="rosterCount" hidden>0 / 3</span></div><p>판사 1마리 + 동료 최대 3마리</p><div id="partyList" class="party-list"><div class="empty-party">판사 임명 후 파티가 구성돼.</div></div></section>
+      <section class="side-tip"><span>FIELD NOTE</span><p id="sideTip">현장을 조사하고 증거를 모아 사건의 진실을 밝혀보자.</p></section>
+      <div class="sidebar-footer">TRUTH · JUSTICE · TRUST</div>
+    </aside>
+    <main class="main-area">
+      <section id="homeScreen" class="screen active">
+        <div class="hero-panel"><div class="hero-copy"><div class="eyebrow">A PIXEL COURTROOM RPG</div><h1>진실을 찾아 떠나는<br><em>정의의 여정.</em></h1><p>마을을 탐험해 단서를 찾고, 법정에서 증언의 모순을 밝혀라.<br>올바른 판결은 판사를 성장시키고, 교화된 포켓몬은 동료가 된다.</p><div class="hero-buttons"><button class="btn primary" id="newGameBtn">새로운 재판 시작</button><button class="btn ghost" id="continueBtn">이어하기</button></div></div><div class="hero-pixel"><div class="pixel-sun"></div><div class="pixel-court"><div class="court-roof">⚖</div><div class="court-pillars"><i></i><i></i><i></i><i></i></div><div class="court-steps"></div></div><div class="pixel-cloud cloud-a"></div><div class="pixel-cloud cloud-b"></div></div></div>
+        <div class="feature-row"><article><b>01 · 탐험과 수사</b><span>픽셀 맵을 이동하며 현장과 인물을 조사</span></article><article><b>02 · 법정 공방</b><span>증언을 추궁하고 결정적 증거를 제시</span></article><article><b>03 · 교화와 육성</b><span>동료를 모아 4마리 조사 파티를 구성</span></article></div>
+        <div class="home-note"><b>30개 법정 구역 · 225개 사건</b><span>진행도는 현재 브라우저에 자동 저장돼.</span></div>
+      </section>
+      <section id="judgeScreen" class="screen">
+        <div class="page-head"><div class="eyebrow">JUDGE APPOINTMENT</div><h1>첫 번째 판사를 임명하자.</h1><p>판사 포켓몬은 조사 능력과 고유 특성이 달라. 선택한 포켓몬이 여정의 주인공이 돼.</p></div>
+        <div id="judgeGrid" class="judge-grid"></div><div class="sticky-action"><span id="judgeChoice">판사 후보를 선택해 줘.</span><button class="btn primary" id="appointBtn" disabled>판사 임명하기 →</button></div>
+      </section>
+      <section id="hubScreen" class="screen">
+        <div class="page-head row-head"><div><div class="eyebrow">ROYAL JUDICIAL DISTRICT</div><h1>왕립 재판소</h1><p>법정 구역을 선택하고 사건 의뢰를 확인해.</p></div><button class="btn ghost small" id="changeJudgeBtn">새 판사 임명</button></div>
+        <div class="hub-banner"><div class="hub-seal">⚖</div><div class="hub-main"><b id="hubJudge">판사</b><span id="hubRank">견습 판사</span></div><div class="hub-metric"><b id="hubCases">0 / 225</b><small>해결한 사건</small></div><div class="hub-metric"><b id="hubStages">0 / 30</b><small>완료 구역</small></div><div class="hub-metric"><b id="hubRoster">0 / 3</b><small>동료 포켓몬</small></div></div>
+        <div class="section-head"><div><div class="eyebrow">CHAPTER SELECT</div><h2>법정 구역 지도</h2></div><span id="hubProgress">0% 완료</span></div><div id="stageGrid" class="stage-grid"></div>
+      </section>
+      <section id="stageScreen" class="screen">
+        <div class="crumb"><button id="backHub">← 법정 구역</button><span>/</span><b id="stageCrumb">제1구역</b></div>
+        <div class="page-head"><div class="eyebrow" id="stageKicker">DISTRICT 01</div><h1 id="stageTitle">첫 번째 법정</h1><p id="stageDesc"></p></div>
+        <div class="stage-progress"><div><b>사건 진행 상황</b><span id="stageCount">0 / 5</span></div><div class="progress-track"><i id="stageProgressBar"></i></div></div><div id="caseGrid" class="case-grid"></div>
+      </section>
+      <section id="exploreScreen" class="screen">
+        <div class="crumb"><button id="leaveExplore">← 사건 목록</button><span>/</span><b id="exploreCrumb">현장 조사</b></div>
+        <div class="explore-head"><div><div class="eyebrow">FIELD INVESTIGATION</div><h1 id="exploreTitle">사건 현장</h1><p id="exploreDesc">주변을 조사해 증거를 수집하자.</p></div><div class="control-hint">이동 <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 또는 방향키 · 조사 <kbd>E</kbd></div></div>
+        <div class="explore-layout"><div class="map-frame"><canvas id="mapCanvas" width="640" height="384" aria-label="픽셀 탐험 지도"></canvas><div class="map-bottom"><span id="mapLocation">숲속 마을 외곽</span><span id="mapObjective">증거 0 / 3</span></div></div><aside class="field-panel"><div class="field-panel-head"><b>현장 수첩</b><span id="fieldEvidenceCount">0 / 3</span></div><p id="fieldMessage">주변의 반짝이는 지점에 다가가 E 키를 눌러 조사해.</p><div id="fieldEvidence" class="field-evidence"></div><div class="field-npcs"><b>조사 대상</b><div id="fieldTargets"></div></div><button class="btn primary full" id="toCourtBtn" disabled>증거를 정리하고 법정으로 →</button></aside></div>
+      </section>
+      <section id="courtScreen" class="screen">
+        <div class="crumb"><button id="leaveCourt">← 현장 기록</button><span>/</span><b>법정 심리</b></div>
+        <div class="court-topline"><div><div class="eyebrow">ROYAL COURT · IN SESSION</div><h1 id="courtTitle">법정 공방</h1><p id="courtSubtitle">증언의 모순을 밝혀라.</p></div><div class="focus-box"><span>집중력</span><b id="focusText">100 / 100</b><div class="focus-track"><i id="focusBar"></i></div></div></div>
+        <div class="courtroom-scene"><div class="scene-backdrop"><div class="scene-window"></div><div class="scene-emblem">⚖</div><div class="witness-stand"><div class="witness-sprite" id="witnessSprite">🐾</div><div class="stand-name" id="standName">증인석</div></div><div class="judge-dais"><div class="judge-sprite" id="courtJudgeSprite">⚖️</div><div class="dais-label">JUDGE</div></div><div class="defendant-desk"><div class="defendant-sprite" id="defendantSprite">❔</div><div class="stand-name" id="defendantName">피고석</div></div></div><div class="scene-caption"><div class="speaker-line"><b id="speakerName">증인</b><span id="roundLabel">심리 1</span></div><p id="testimonyText"></p></div></div>
+        <div class="court-actions-grid"><section class="court-choice-panel"><div class="panel-title"><b>Ⅰ · 진술 추궁</b><span>모순이 있는 진술을 선택</span></div><div id="statementList" class="statement-list"></div></section><section class="court-choice-panel"><div class="panel-title"><b>Ⅱ · 증거 제출</b><span>진술을 반박할 증거 선택</span></div><div id="courtEvidenceList" class="court-evidence-list"></div></section></div>
+        <div class="court-submit-row"><p id="courtFeedback">진술 하나와 증거 하나를 선택해 제출해.</p><button class="btn primary" id="presentEvidenceBtn" disabled>이의 제기 · 증거 제시</button></div>
+      </section>
+      <section id="verdictScreen" class="screen"><div class="verdict-wrap"><div class="verdict-icon" id="verdictIcon">⚖</div><div class="eyebrow">FINAL JUDGMENT</div><h1 id="verdictTitle">최종 판결</h1><p id="verdictText"></p><div id="verdictRewards" class="reward-grid"></div><div id="recruitPanel" class="recruit-panel"></div><div class="verdict-buttons"><button class="btn primary" id="nextCaseBtn">다음 사건 →</button><button class="btn ghost" id="caseListBtn">사건 목록으로</button></div></div></section>
+      <section id="partyScreen" class="screen"><div class="page-head row-head"><div><div class="eyebrow">PARTY MANAGEMENT</div><h1>조사 파티 편성</h1><p>판사 1마리와 교화 동료 최대 3마리로 파티를 구성해.</p></div><button class="btn ghost small" id="partyBackHub">법정으로 돌아가기</button></div><div id="partyManage" class="party-manage"></div></section>
+    </main>
+  </div>
+  <footer><span>POKÉMON COURT · 정의의 여정</span><span>비공식 팬메이드 프로토타입 · 브라우저 저장</span><button id="partyNav">파티 관리</button></footer>
+  <div id="modal" class="modal hidden"><div class="modal-card"><button id="modalClose" class="modal-close">×</button><div id="modalContent"></div></div></div>
+  <div id="toast" class="toast"></div>
+</div>
+<script src="game.js"></script>
+</body></html>
