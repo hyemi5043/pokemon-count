@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>포켓몬 재판소: 글리치 법정 (Pokémon Court)</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        body {
+            background-color: #050508;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        #game-wrapper {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            border: 4px solid #3b4252;
+            box-shadow: 0 0 25px rgba(0, 255, 204, 0.2);
+            background: #000;
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            image-rendering: pixelated;
+        }
+        /* UI Overlay Layer */
+        #ui-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 15px;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(15, 17, 26, 0.85);
+            padding: 10px 15px;
+            border: 2px solid #4c566a;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #88c0d0;
+        }
+        .dialogue-container {
+            pointer-events: auto;
+            background: rgba(10, 12, 18, 0.95);
+            border: 3px solid #88c0d0;
+            border-radius: 6px;
+            padding: 15px;
+            min-height: 120px;
+            position: relative;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.5);
+        }
+        .speaker-name {
+            color: #ebcb8b;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .dialogue-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #eceff4;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            background: #4c566a;
+            color: #eceff4;
+            border: 2px solid #88c0d0;
+            padding: 6px 14px;
+            font-family: inherit;
+            font-size: 13px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.2s;
+        }
+        .btn:hover {
+            background: #88c0d0;
+            color: #2e3440;
+            font-weight: bold;
+        }
+        /* Courtroom Effects */
+        .objection-banner {
+            position: absolute;
+            top: 40%; left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 50px;
+            font-weight: 900;
+            color: #bf616a;
+            text-shadow: 3px 3px 0 #fff, -3px -3px 0 #000;
+            pointer-events: none;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 99;
+        }
+        .objection-banner.active {
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-wrapper">
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <div id="ui-layer">
+        <div class="top-bar">
+            <div>📍 <span id="loc-display">구역 1: 글리치 재판소 입구</span></div>
+            <div>⚖️ 평판: <span id="rep-display">S급 (1000pt)</span></div>
+            <div>🐾 파티: <span id="party-display">0/4</span></div>
+        </div>
+        <div id="objection" class="objection-banner">이의 있음!</div>
+        <div class="dialogue-container">
+            <div id="speaker" class="speaker-name">시스템</div>
+            <div id="dialogue" class="dialogue-text">WASD 또는 방향키로 필드를 탐험하고 단서를 조사하세요.</div>
+            <div id="buttons" class="btn-group"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+/**
+ * POKEMON COURT ENGINE Core Architecture
+ */
+
+// 1. Data Definitions (30 Zones, Mascot Roster, Cases)
+const ZONES = Array.from({ length: 30 }, (_, i) => ({
+    id: i + 1,
+    name: `구역 ${i + 1}: ${['재판소 중앙 로비', '증거 보관실', '오염된 숲', '포코우드 상영관', '미씽노 발생지', '용암 재판정'][i % 6]}`,
+    bgType: i % 6
+}));
+
+const MASCOTS = [
+    { id: 1, name: "흑백카츄", type: "Glitch", status: "교화 가능" },
+    { id: 2, name: "이끼만보", type: "Grass/Bug", status: "교화 가능" },
+    { id: 3, name: "버리맨", type: "Ghost/Error", status: "교화 가능" },
+    { id: 4, name: "뾰족귀 피츄", type: "Electric", status: "동료" },
+    { id: 5, name: "지우 개굴닌자", type: "Water/Dark", status: "동료" },
+    { id: 6, name: "미씽노", type: "Bird/Normal", status: "수수께끼" },
+    { id: 7, name: "메카 피카츄", type: "Steel/Electric", status: "교화 가능" },
+    { id: 8, name: "다크 라이츄", type: "Dark", status: "교화 가능" },
+    { id: 9, name: "섀도우 루기아", type: "Shadow", status: "교화 가능" },
+    { id: 10, name: "폴리곤 Z-Custom", type: "Digital", status: "교화 가능" },
+    { id: 11, name: "유령 포켓몬", type: "Ghost", status: "교화 가능" },
+    { id: 12, name: "코마스타-X", type: "Rock/Water", status: "교화 가능" }
+];
+
+// Generate 150 Cases Database Structure
+const CASES_DB = Array.from({ length: 150 }, (_, i) => ({
+    id: i + 1,
+    title: `사건 #${i + 1}: ${MASCOTS[i % 12].name}의 ${['데이터 도난', '시공간 왜곡', '환각 소동', '코드 변조'][i % 4]} 사건`,
+    suspect: MASCOTS[i % 12].name,
+    clues: [`오류 파편 #${i+1}`, `목격자 진술서`, `디지털 흔적`],
+    verdict: i % 2 === 0 ? "무죄 (교화 성공)" : "유죄 (재교육 필요)"
+}));
+
+// Game State
+const state = {
+    currentZone: 1,
+    currentCaseIndex: 0,
+    player: { x: 400, y: 300, speed: 4, dir: 'down' },
+    keys: {},
+    judgeReputation: 1000,
+    judgeRank: "S급",
+    party: [],
+    evidence: [],
+    mode: 'FIELD', // FIELD, INVESTIGATE, COURT
+    savedData: null
+};
+
+// Canvas Setup & Render Engines
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+// Render Backgrounds based on 6 Pixel Styles
+function drawPixelBackground(bgType) {
+    const colors = [
+        ["#1e1e2e", "#2b2b3b"], // 1. Court Lobby
+        ["#18230f", "#273719"], // 2. Forest
+        ["#2b1810", "#3d2317"], // 3. Pokewood
+        ["#112233", "#1a334d"], // 4. Missing Matrix
+        ["#2d112c", "#441a43"], // 5. Lava Court
+        ["#0f2b2c", "#194345"]  // 6. Evidence Vault
+    ];
+    const palette = colors[bgType];
+    ctx.fillStyle = palette[0];
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Render Grid Tilemap Pattern
+    ctx.fillStyle = palette[1];
+    const tileSize = 40;
+    for (let x = 0; x < canvas.width; x += tileSize) {
+        for (let y = 0; y < canvas.height; y += tileSize) {
+            if ((x + y) % (tileSize * 2) === 0) {
+                ctx.fillRect(x, y, tileSize, tileSize);
+            }
+        }
+    }
+}
+
+// Draw Player & Mascot Entities
+function drawEntities() {
+    // Draw Player Tile
+    ctx.fillStyle = "#88c0d0";
+    ctx.fillRect(state.player.x - 16, state.player.y - 16, 32, 32);
+    ctx.fillStyle = "#eceff4";
+    ctx.fillRect(state.player.x - 8, state.player.y - 12, 16, 8); // Face pixel
+
+    // Draw Current Area Mascot NPC
+    const mascot = MASCOTS[(state.currentZone - 1) % 12];
+    ctx.fillStyle = "#bf616a";
+    ctx.fillRect(600, 250, 40, 40);
+    ctx.fillStyle = "#fff";
+    ctx.font = "12px monospace";
+    ctx.fillText(mascot.name, 595, 240);
+}
+
+// Courtroom Render Logic
+function drawCourtroom() {
+    ctx.fillStyle = "#111";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Judge Bench
+    ctx.fillStyle = "#5e81ac";
+    ctx.fillRect(250, 50, 300, 100);
+    ctx.fillStyle = "#eceff4";
+    ctx.fillText("재판장석 (판사)", 360, 105);
+
+    // Defense & Prosecution Stands
+    ctx.fillStyle = "#a3be8c";
+    ctx.fillRect(100, 300, 150, 80);
+    ctx.fillText("변호인석", 145, 345);
+
+    ctx.fillStyle = "#bf616a";
+    ctx.fillRect(550, 300, 150, 80);
+    ctx.fillText("검사석", 605, 345);
+}
+
+// Main Game Loop
+function gameLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (state.mode === 'FIELD') {
+        // Player Movement Logic
+        if (state.keys['ArrowUp'] || state.keys['w'] || state.keys['W']) state.player.y = Math.max(32, state.player.y - state.player.speed);
+        if (state.keys['ArrowDown'] || state.keys['s'] || state.keys['S']) state.player.y = Math.min(canvas.height - 32, state.player.y + state.player.speed);
+        if (state.keys['ArrowLeft'] || state.keys['a'] || state.keys['A']) state.player.x = Math.max(32, state.player.x - state.player.speed);
+        if (state.keys['ArrowRight'] || state.keys['d'] || state.keys['D']) state.player.x = Math.min(canvas.width - 32, state.player.x + state.player.speed);
+
+        drawPixelBackground((state.currentZone - 1) % 6);
+        drawEntities();
+    } else if (state.mode === 'COURT') {
+        drawCourtroom();
+    }
+
+    requestAnimationFrame(gameLoop);
+}
+
+// User Interface & Event Trigger Systems
+const uiSpeaker = document.getElementById("speaker");
+const uiDialogue = document.getElementById("dialogue");
+const uiButtons = document.getElementById("buttons");
+
+function updateUI() {
+    document.getElementById("loc-display").innerText = ZONES[state.currentZone - 1].name;
+    document.getElementById("rep-display").innerText = `${state.judgeRank} (${state.judgeReputation}pt)`;
+    document.getElementById("party-display").innerText = `${state.party.length}/4`;
+}
+
+function startInvestigation() {
+    state.mode = 'INVESTIGATE';
+    const currentCase = CASES_DB[state.currentCaseIndex];
+    uiSpeaker.innerText = "현장 조사 모드";
+    uiDialogue.innerText = `[${currentCase.title}] 사건 현장입니다. 주변에서 단서를 수집하세요.`;
+    uiButtons.innerHTML = `
+        <button class="btn" onclick="collectClue()">단서 수집하기</button>
+        <button class="btn" onclick="enterCourt()">법정 개정하기</button>
+        <button class="btn" onclick="changeZone()">다른 구역으로 이동</button>
+    `;
+}
+
+function collectClue() {
+    const currentCase = CASES_DB[state.currentCaseIndex];
+    if (!state.evidence.includes(currentCase.clues[0])) {
+        state.evidence.push(currentCase.clues[0]);
+        uiDialogue.innerText = `결정적 단서 [${currentCase.clues[0]}]을(를) 획득했습니다! 증거 목록에 등록됩니다.`;
+    } else {
+        uiDialogue.innerText = "더 이상 이 구역에서 찾을 수 있는 새로운 단서가 없습니다.";
+    }
+}
+
+function enterCourt() {
+    state.mode = 'COURT';
+    const currentCase = CASES_DB[state.currentCaseIndex];
+    
+    // Objection Banner Effect Trigger
+    const obj = document.getElementById("objection");
+    obj.classList.add("active");
+    setTimeout(() => obj.classList.remove("active"), 800);
+
+    uiSpeaker.innerText = "글리치 법정";
+    uiDialogue.innerText = `피고인 [${currentCase.suspect}]의 재판이 시작되었습니다. 수집된 증거를 제시하고 판결을 내리세요.`;
+    uiButtons.innerHTML = `
+        <button class="btn" onclick="presentEvidence()">증거 제시 및 심문</button>
+        <button class="btn" onclick="passVerdict(true)">무죄 및 교화 판결</button>
+        <button class="btn" onclick="passVerdict(false)">유죄 판결</button>
+    `;
+}
+
+function presentEvidence() {
+    if (state.evidence.length > 0) {
+        uiDialogue.innerText = `증거 [${state.evidence[0]}]을(를) 제출했습니다! 피고인의 진술에서 모순이 발견되었습니다.`;
+    } else {
+        uiDialogue.innerText = "제시할 증거가 없습니다! 현장 조사를 먼저 진행해야 합니다.";
+    }
+}
+
+function passVerdict(isInnocent) {
+    const currentCase = CASES_DB[state.currentCaseIndex];
+    if (isInnocent) {
+        state.judgeReputation += 50;
+        uiDialogue.innerText = `판결: 피고 [${currentCase.suspect}]에게 무죄를 선고합니다. 피고는 교화 파티에 합류합니다!`;
+        if (state.party.length < 4 && !state.party.includes(currentCase.suspect)) {
+            state.party.push(currentCase.suspect);
+        }
+    } else {
+        state.judgeReputation -= 20;
+        uiDialogue.innerText = `판결: 피고 [${currentCase.suspect}]에게 유죄를 선고합니다. 시설로 이송됩니다.`;
+    }
+    
+    // Calculate Rank
+    if (state.judgeReputation >= 1200) state.judgeRank = "SS급";
+    else if (state.judgeReputation >= 1000) state.judgeRank = "S급";
+    else state.judgeRank = "A급";
+
+    saveGame();
+    updateUI();
+
+    uiButtons.innerHTML = `
+        <button class="btn" onclick="nextCase()">다음 사건 진행 (#${state.currentCaseIndex + 2})</button>
+    `;
+}
+
+function nextCase() {
+    state.currentCaseIndex = (state.currentCaseIndex + 1) % 150;
+    state.evidence = [];
+    state.mode = 'FIELD';
+    uiSpeaker.innerText = "탐험 모드";
+    uiDialogue.innerText = "새로운 사건 구역으로 이동했습니다. WASD로 필드를 탐험하세요.";
+    uiButtons.innerHTML = `<button class="btn" onclick="startInvestigation()">현장 조사 시작</button>`;
+}
+
+function changeZone() {
+    state.currentZone = (state.currentZone % 30) + 1;
+    state.mode = 'FIELD';
+    updateUI();
+    startInvestigation();
+}
+
+// Auto Save / Load Engine (LocalStorage)
+function saveGame() {
+    const saveData = {
+        currentZone: state.currentZone,
+        currentCaseIndex: state.currentCaseIndex,
+        judgeReputation: state.judgeReputation,
+        judgeRank: state.judgeRank,
+        party: state.party
+    };
+    localStorage.setItem("POKEMON_COURT_SAVE", JSON.stringify(saveData));
+}
+
+function loadGame() {
+    const data = localStorage.getItem("POKEMON_COURT_SAVE");
+    if (data) {
+        const parsed = JSON.parse(data);
+        state.currentZone = parsed.currentZone || 1;
+        state.currentCaseIndex = parsed.currentCaseIndex || 0;
+        state.judgeReputation = parsed.judgeReputation || 1000;
+        state.judgeRank = parsed.judgeRank || "S급";
+        state.party = parsed.party || [];
+    }
+}
+
+// Event Listeners
+window.addEventListener("keydown", e => state.keys[e.key] = true);
+window.addEventListener("keyup", e => state.keys[e.key] = false);
+
+// Init
+loadGame();
+updateUI();
+startInvestigation();
+gameLoop();
+
+</script>
+</body>
+</html>
